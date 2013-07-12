@@ -11,6 +11,7 @@ filament_diameter = 2;
 fitting_support = 4;
 motor_mount_translation=[50.5,34,0];
 filament_feed_hole_offset=filament_diameter+0.5;
+hot_end_offset = 6;
 
 module fanMount() {
 	translate([-40/2, wade_block_depth/2,0])
@@ -23,7 +24,7 @@ module fanMount() {
 module fanCutout() {
 translate([-40/2, wade_block_depth/2,0])
 	difference() {
-		#translate([0,0,base_thickness])	rotate([-55,0,0]) translate([0,6,0])
+		translate([0,0,base_thickness])	rotate([-55,0,0]) translate([0,6,0])
 
 		union() {
 			translate([4,4,-10])
@@ -87,21 +88,15 @@ rotate([180,0,0])
 difference() {
 	union() {
 		base();
-		fanMount();
+		translate([hot_end_offset,0,0]) fanMount();
 	}
+	translate([hot_end_offset,0,0])
 	union() {
+		cylinder(r=filament_diameter, h=20);
 		translate([0,0,-.2])groovemount_holes();
 		translate([0,0, 4.76+.2]) fitting();
 
 	}
-	cylinder(r=filament_diameter, h=20);
 	translate([0,0,-m4_nut_height])baseMount();
-	fanCutout();	
+	translate([hot_end_offset,0,0])	fanCutout();	
 }
-
-	
-
-//translate([0, 30,0])fitting();
-
-//#groovemount();
-
