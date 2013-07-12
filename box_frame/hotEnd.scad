@@ -1,4 +1,4 @@
-include <configuration.scad>
+		include <configuration.scad>
 include <inc/metric.scad>
 
 
@@ -11,6 +11,34 @@ filament_diameter = 2;
 fitting_support = 4;
 motor_mount_translation=[50.5,34,0];
 filament_feed_hole_offset=filament_diameter+0.5;
+
+module fanMount() {
+	translate([-40/2, wade_block_depth/2,0])
+	difference() {
+		translate([1,0,0])
+		cube([38,10,base_thickness]);
+	}
+}
+
+module fanCutout() {
+translate([-40/2, wade_block_depth/2,0])
+	difference() {
+		#translate([0,0,base_thickness])	rotate([-55,0,0]) translate([0,6,0])
+
+		union() {
+			translate([4,4,-10])
+			screw(r=m3_diameter/2,r_head=m3_diameter/2*1.3, head_drop=5);
+
+			translate([36,4,-10])
+			screw(r=m3_diameter/2,r_head=m3_diameter/2*1.3, head_drop=5);
+
+			cube([40,40,10]);
+
+			translate([-10,-10,0])
+						cube([60,60,10]);
+		}
+	}
+}
 
 module groovemount(){
 	union()
@@ -53,13 +81,27 @@ rotate([90,0,0])
 			}
 }
 
+
+translate([0,0, base_thickness])
+rotate([180,0,0])
 difference() {
-	base();
+	union() {
+		base();
+		fanMount();
+	}
 	union() {
 		translate([0,0,-.2])groovemount_holes();
 		translate([0,0, 4.76+.2]) fitting();
+
 	}
 	cylinder(r=filament_diameter, h=20);
 	translate([0,0,-m4_nut_height])baseMount();
+	fanCutout();	
 }
+
+	
+
+//translate([0, 30,0])fitting();
+
+//#groovemount();
 
