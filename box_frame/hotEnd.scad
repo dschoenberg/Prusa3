@@ -2,7 +2,7 @@
 include <inc/metric.scad>
 
 
-base_thickness=12;
+base_thickness=14;
 base_length=70;
 base_leadout=25;
 wade_block_depth=28;
@@ -14,10 +14,10 @@ filament_feed_hole_offset=filament_diameter+0.5;
 hot_end_offset = 5;
 
 module fanMount() {
-	translate([-40/2, wade_block_depth/2,0])
+	translate([-45/2, wade_block_depth/2,0])
 	difference() {
 		translate([1,0,0])
-		cube([38,10,base_thickness]);
+		cube([45,10,base_thickness]);
 	}
 }
 
@@ -29,14 +29,25 @@ translate([-40/2, wade_block_depth/2,0])
 		union() {
 			translate([4,4,-10])
 			screw(r=m3_diameter/2,r_head=m3_diameter/2*1.3, head_drop=5);
-
+	
+#	translate([4,4,-6])rotate([0,0,90])
+	union() {
+		nut(m3_nut_diameter + .2, 3);	
+		translate([20/2-1,0,3/2])cube([m3_nut_diameter+20, m3_nut_diameter+1,3], center=true);
+	}		
 			translate([36,4,-10])
 			screw(r=m3_diameter/2,r_head=m3_diameter/2*1.3, head_drop=5);
+
+#	translate([36,4,-6])rotate([0,0,90])
+	union() {
+		nut(m3_nut_diameter + .2, 3);	
+		translate([20/2-1,0,3/2])cube([m3_nut_diameter+20, m3_nut_diameter+1,3], center=true);
+	}	
 
 			cube([40,40,10]);
 
 			translate([-10,-10,0])
-						cube([60,60,10]);
+			cube([60,60,10]);
 		}
 	}
 }
@@ -62,7 +73,7 @@ module base() {
 
 module fitting() {
 	nut(m4_nut_diameter + .2, m4_nut_height+.2);	
-	translate([0,0,1]) cylinder(r=5/2, h=5);
+	translate([0,0,1]) cylinder(r=5/2, h=8);
 	//translate([0,0,1+5]) cylinder(r=10/2+.3, h=10);
 }
 
@@ -89,13 +100,15 @@ difference() {
 		base();
 		translate([hot_end_offset,0,0]) fanMount();
 	}
+
 	translate([hot_end_offset,0,0])
 	union() {
 		cylinder(r=filament_diameter, h=20);
 		translate([0,0,-.2])groovemount_holes();
-#		translate([0,0, 4.76+1.0]) fitting();
+		translate([0,0, 4.76+1.0]) fitting();
 
 	}
+
 	translate([0,0,-m4_nut_height])baseMount();
 	translate([hot_end_offset,0,0])	fanCutout();	
 }
