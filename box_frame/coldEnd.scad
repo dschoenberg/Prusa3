@@ -1,4 +1,4 @@
-		include <configuration.scad>
+include <configuration.scad>
 include <inc/metric.scad>
 
 
@@ -12,6 +12,7 @@ fitting_support = 4;
 motor_mount_translation=[50.5,34,0];
 filament_feed_hole_offset=filament_diameter+0.5;
 hot_end_offset = 0;
+mounting_offset = 8;
 
 module z_top_base(){
  translate([0,4,0]) cube_fillet([base_thickness,32,16], top=[3,3,3],vertical=[0,0,0]); // plate touching the base
@@ -25,12 +26,12 @@ module z_top_holes(){
 
 module z_top_holes(){
  // Screw holes
- translate([-1,10,10]) rotate([0,90,0]) cylinder(h = 30, r=1.8, $fn=30);
- translate([-1,10+20,10]) rotate([0,90,0]) cylinder(h = 30, r=1.8, $fn=30);
+ translate([-1,10,mounting_offset]) rotate([0,90,0]) cylinder(h = 30, r=1.8, $fn=30);
+ translate([-1,10+20,mounting_offset]) rotate([0,90,0]) cylinder(h = 30, r=1.8, $fn=30);
 
  // Screw heads
- #translate([-0.1,10,10]) rotate([0,90,0]) nut(m3_nut_diameter + .2, 4.25+.2);		 
- translate([-0.1,10+20,10]) rotate([0,90,0]) nut(m3_nut_diameter + .2, 4.25+.2);		
+ translate([-0.1,10,mounting_offset]) rotate([0,90,0]) nut(m3_nut_diameter + .2, 4.25+.2);		 
+ translate([-0.1,10+20,mounting_offset]) rotate([0,90,0]) nut(m3_nut_diameter + .2, 4.25+.2);		
 }
 
 
@@ -88,46 +89,43 @@ module fitting() {
 }
 
 module baseMount() {
-// Mounting holes on the base.
-			for (mount=[0:1])
-			{
-rotate([90,0,0])
-				union() {
-				translate([25*((mount<1)?1:-1),0,0])
-				rotate([-90,0,0]) rotate(360/16) cylinder(r=m4_diameter/2,h=base_thickness+2,$fn=8);	
+	// Mounting holes on the base.
+	for (mount=[0:1])
+	{
+		rotate([90,0,0])
+		union() {
+			translate([25*((mount<1)?1:-1),0,0])
+			rotate([-90,0,0]) rotate(360/16) cylinder(r=m4_diameter/2,h=base_thickness+2,$fn=8);	
 	
-				translate([25*((mount<1)?1:-1),base_thickness,0])
-				rotate([-90,0,0])
-				cylinder(r=m4_nut_diameter/2,h=base_thickness,$fn=6);	
+			translate([25*((mount<1)?1:-1),base_thickness,0])
+			rotate([-90,0,0])
+			cylinder(r=m4_nut_diameter/2,h=base_thickness,$fn=6);	
+		}
+	}
 }
+
+difference() {
+	difference() {
+		union() {
+			base();
+	
+			translate([-45/2,-13,base_thickness])
+			rotate([0,0,-90])
+			rotate([0,90,0])
+			difference(){
+			  z_top_base();
+			  z_top_holes();
 			}
-}
+		}
 
-difference() {
-
-//translate([0,0, base_thickness])
-//rotate([180,0,0])
-difference() {
-	union() {
-		base();
-
-	translate([-45/2,-13,base_thickness])
-	rotate([0,0,-90])
-	rotate([0,90,0])
-	difference(){
-	  z_top_base();
-	  z_top_holes();
+		translate([hot_end_offset,0,0])
+		union() {
+			cylinder(r=filament_diameter, h=20);
+			//translate([0,0,-.2])groovemount_holes();
+			translate([0,0, 0]) fitting();
+	
+		}
+		translate([0,0,-m4_nut_height])baseMount();	
 	}
-
-	}
-	translate([hot_end_offset,0,0])
-	union() {
-		cylinder(r=filament_diameter, h=20);
-		//translate([0,0,-.2])groovemount_holes();
-		translate([0,0, 0]) fitting();
-
-	}
-	translate([0,0,-m4_nut_height])baseMount();	
-}
 	//#translate([0,-25,-50])cube([50,50,50]);
 }
