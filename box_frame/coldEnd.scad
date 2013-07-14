@@ -1,7 +1,6 @@
 include <configuration.scad>
 include <inc/metric.scad>
 
-
 base_thickness=8;
 base_length=70;
 base_leadout=25;
@@ -15,7 +14,7 @@ hot_end_offset = 0;
 mounting_offset = 8;
 
 module z_top_base(){
- translate([0,4,0]) cube_fillet([base_thickness,32,16], top=[3,3,3],vertical=[0,0,0]); // plate touching the base
+ translate([0,4,0]) cube_fillet([base_thickness,32,22], top=[3,3,3],vertical=[0,0,0]); // plate touching the base
 }
 
 module z_top_holes(){
@@ -85,7 +84,7 @@ module base() {
 module fitting() {
 	nut(m4_nut_diameter + .2, m4_nut_height+.2);	
 	translate([0,0,1]) cylinder(r=5/2, h=5);
-	translate([0,0,1+5]) cylinder(r=10/2+.3, h=10);
+	translate([0,0,1+5]) cylinder(r=10/2+.6, h=10);
 }
 
 module baseMount() {
@@ -109,12 +108,11 @@ difference() {
 		union() {
 			base();
 	
-			translate([-45/2,-13,base_thickness])
+			translate([-45/2,-12,base_thickness])
 			rotate([0,0,-90])
 			rotate([0,90,0])
 			difference(){
 			  z_top_base();
-			  z_top_holes();
 			}
 		}
 
@@ -126,6 +124,11 @@ difference() {
 	
 		}
 		translate([0,0,-m4_nut_height])baseMount();	
+		
+		translate([-45/2,-17,base_thickness])
+		rotate([0,0,-90])
+		rotate([0,90,0])
+		z_top_holes();
 	}
 	//#translate([0,-25,-50])cube([50,50,50]);
 }
