@@ -17,16 +17,11 @@ module z_top_base(){
  translate([0,4,0]) cube_fillet([base_thickness,32,22], top=[3,3,3],vertical=[0,0,0]); // plate touching the base
 }
 
-module z_top_holes(){
- // Screw holes
- #translate([-1,10,10]) rotate([0,90,0]) cylinder(h = 200, r=1.8, $fn=30);
- translate([-1,10+20,10]) rotate([0,90,0]) cylinder(h = 200, r=1.8, $fn=30);
-}
 
 module z_top_holes(){
  // Screw holes
- translate([-1,10,mounting_offset]) rotate([0,90,0]) cylinder(h = 30, r=1.8, $fn=30);
- translate([-1,10+20,mounting_offset]) rotate([0,90,0]) cylinder(h = 30, r=1.8, $fn=30);
+ translate([-10,10,mounting_offset]) rotate([0,90,0]) cylinder(h = 30, r=1.8, $fn=30);
+ translate([-10,10+20,mounting_offset]) rotate([0,90,0]) cylinder(h = 30, r=1.8, $fn=30);
 
  // Screw heads
  translate([-0.1,10,mounting_offset]) rotate([0,90,0]) nut(m3_nut_diameter + .2, 4.25+.2);		 
@@ -125,7 +120,7 @@ difference() {
 		}
 		translate([0,0,-m4_nut_height])baseMount();	
 		
-		translate([-45/2,-17,base_thickness])
+		#translate([-45/2,-17,4])
 		rotate([0,0,-90])
 		rotate([0,90,0])
 		z_top_holes();
